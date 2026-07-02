@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
-
+import jakarta.persistence.*;
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -22,7 +22,8 @@ public class Order {
 
     private Double totalAmount;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "order",
             cascade = CascadeType.ALL,
@@ -64,11 +65,11 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

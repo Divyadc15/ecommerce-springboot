@@ -1,6 +1,7 @@
 package com.pro1.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,9 +28,46 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/files/**","/uploads/**","/v3/api-docs/**",
+
+                        // Public APIs
+                        .requestMatchers(
+                                "/auth/**",
+                                "/files/**",
+                                "/uploads/**",
+                                "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html").permitAll()
+                                "/swagger-ui.html"
+                        ).permitAll()
+
+                        // Public GET APIs
+                        .requestMatchers(HttpMethod.GET,
+                                "/products/**",
+                                "/categories/**")
+                        .permitAll()
+
+                        // Admin APIs
+                        .requestMatchers(HttpMethod.POST,
+                                "/products/**",
+                                "/categories/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT,
+                                "/products/**",
+                                "/categories/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE,
+                                "/products/**",
+                                "/categories/**")
+                        .hasRole("ADMIN")
+
+                        // User APIs
+                        .requestMatchers("/cart/**")
+                        .hasRole("USER")
+
+                        .requestMatchers("/orders/**")
+                        .hasRole("USER")
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

@@ -1,5 +1,5 @@
 package com.pro1.ecommerce.service;
-
+import com.pro1.ecommerce.entity.OrderStatus;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +20,11 @@ import com.pro1.ecommerce.repository.CartRepository;
 import com.pro1.ecommerce.repository.OrderItemRepository;
 import com.pro1.ecommerce.repository.OrderRepository;
 import com.pro1.ecommerce.repository.UserRepository;
-
+import com.pro1.ecommerce.entity.OrderStatus;
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
@@ -37,7 +36,6 @@ public class OrderService {
                         UserRepository userRepository) {
 
         this.orderRepository = orderRepository;
-        this.orderItemRepository = orderItemRepository;
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.userRepository = userRepository;
@@ -67,8 +65,7 @@ public class OrderService {
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(java.time.LocalDateTime.now());
-        order.setStatus("PLACED");
-
+        order.setStatus(OrderStatus.PLACED);
         double totalAmount = 0;
 
         List<OrderItem> orderItems = new ArrayList<>();
@@ -186,11 +183,11 @@ public class OrderService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Order Not Found"));
 
-        if ("CANCELLED".equals(order.getStatus())) {
+        if (order.getStatus() == OrderStatus.CANCELLED)  {
             return "Order Already Cancelled";
         }
 
-        order.setStatus("CANCELLED");
+        order.setStatus(OrderStatus.CANCELLED);
 
         orderRepository.save(order);
 

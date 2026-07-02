@@ -1,5 +1,8 @@
 package com.pro1.ecommerce.service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -49,8 +52,15 @@ public class ProductService {
     }
 
     // Get All Products
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+ // Get All Products With Pagination & Sorting
+    public Page<Product> getAllProducts(int page, int size, String sortBy) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(sortBy).ascending());
+
+        return productRepository.findAll(pageable);
     }
 
     // Get Product By Id
@@ -114,5 +124,10 @@ public class ProductService {
         }
 
         return productRepository.findByCategory(category);
+    }
+ // Search Products
+    public List<Product> searchProducts(String keyword) {
+
+        return productRepository.findByNameContainingIgnoreCase(keyword);
     }
 }
