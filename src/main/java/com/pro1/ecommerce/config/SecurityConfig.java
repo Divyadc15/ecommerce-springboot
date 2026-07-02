@@ -27,7 +27,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/files/**","/uploads/**").permitAll()
+                        .requestMatchers("/auth/**", "/files/**","/uploads/**","/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -40,5 +42,6 @@ public class SecurityConfig {
                 );
 
         return http.build();
+        
     }
 }
